@@ -20,6 +20,7 @@ import com.example.meteo.utils.Constant;
 import com.example.meteo.utils.FastDialog;
 import com.example.meteo.utils.Network;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
                             // 2-
                             textViewTemperature.setText(String.format(getString(R.string.main_temperature),api.getMain().getTemp()));
                             // TODO : afficher l'image Weather > icon
+                            String url = String.format(Constant.URL_IMAGE,api.getWeather().get(0).getIcon());
+                            Picasso.get().load(url).into(imageViewIcon);
                         }
                     }
                 }, new Response.ErrorListener() {
