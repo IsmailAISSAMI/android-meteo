@@ -69,28 +69,39 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.e("Volley", "onResponse: " + response );
-
-                        //Gson
-                        ApiWeather api = new Gson().fromJson(response,ApiWeather.class);
-                        if(api.getCod()==200){
-                            textViewCity.setText(api.getName());
-                            // deux méthodes pour afficher le même résultat -> %s °C
-                            // 1- textViewTemperature.setText(api.getMain().getTemp() + "°C");
-                            // 2-
-                            textViewTemperature.setText(String.format(getString(R.string.main_temperature),api.getMain().getTemp()));
-                            // TODO : afficher l'image Weather > icon
-                            String url = String.format(Constant.URL_IMAGE,api.getWeather().get(0).getIcon());
-                            Picasso.get().load(url).into(imageViewIcon);
-                        }
+                        parseJson(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("Volley", "onError: " + error);
+                parseJson(new String(error.networkResponse.data));
             }
         });
 
 // Add the request to the RequestQueue.
         queue.add(stringRequest);
+    }
+
+    private void parseJson(String response) {
+        textViewCity.setText(null);
+        textViewTemperature.setText(null);
+        imageViewIcon.setImageBitmap(null);
+        //Gson
+        ApiWeather api = new Gson().fromJson(response,ApiWeather.class);
+        if(api.getCod()==200){
+            textViewCity.setText(api.getName());
+            // deux méthodes pour afficher le même résultat -> %s °C
+            // 1- textViewTemperature.setText(api.getMain().getTemp() + "°C");
+            // 2-
+            textViewTemperature.setText(String.format(getString(R.string.main_temperature),api.getMain().getTemp()));
+            // TODO : afficher l'image Weather > icon
+            String url = String.format(Constant.URL_IMAGE,api.getWeather().get(0).getIcon());
+            Picasso.get().load(url).into(imageViewIcon);
+        } else {
+            FastDialog.showDialog(MainActivity.this,
+                    FastDialog.SIMPLE_DIALOG,
+                    api.getMessage());
+        }
     }
 }
