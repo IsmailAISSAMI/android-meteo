@@ -73,7 +73,10 @@ public class MainActivity extends AppCompatActivity {
                         ApiWeather api = new Gson().fromJson(response,ApiWeather.class);
                         if(api.getCod()==200){
                             textViewCity.setText(api.getName());
-                            // TODO : afficher la température Main > temp
+                            // deux méthodes pour afficher le même résultat -> %s °C
+                            // 1- textViewTemperature.setText(api.getMain().getTemp() + "°C");
+                            // 2-
+                            textViewTemperature.setText(String.format(getString(R.string.main_temperature),api.getMain().getTemp()));
                             // TODO : afficher l'image Weather > icon
                         }
                     }

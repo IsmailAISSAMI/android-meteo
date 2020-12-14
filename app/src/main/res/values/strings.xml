@@ -2,4 +2,6 @@
     <string name="app_name">Meteo</string>
     <string name="ok">OK</string>
     <string name="cancel">annuler</string>
+    <!--MainActivity-->
+    <string name="main_temperature">%s °C</string>
 </resources>
