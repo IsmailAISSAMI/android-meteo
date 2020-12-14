@@ -15,9 +15,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.meteo.models.ApiWeather;
 import com.example.meteo.utils.Constant;
 import com.example.meteo.utils.FastDialog;
 import com.example.meteo.utils.Network;
+import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,6 +68,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.e("Volley", "onResponse: " + response );
+
+                        //Gson
+                        ApiWeather api = new Gson().fromJson(response,ApiWeather.class);
+                        if(api.getCod()==200){
+                            textViewCity.setText(api.getName());
+                            // TODO : afficher la température Main > temp
+                            // TODO : afficher l'image Weather > icon
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
