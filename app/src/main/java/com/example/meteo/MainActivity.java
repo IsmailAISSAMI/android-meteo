@@ -19,6 +19,7 @@ import com.example.meteo.models.ApiWeather;
 import com.example.meteo.utils.Constant;
 import com.example.meteo.utils.FastDialog;
 import com.example.meteo.utils.Network;
+import com.example.meteo.utils.Preference;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -38,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
         textViewCity = findViewById(R.id.textViewCity);
         textViewTemperature = findViewById(R.id.textViewTemperature);
         imageViewIcon = findViewById(R.id.imageViewIcon);
+
+        // affichage de la ville
+        String city = Preference.getCity(MainActivity.this);
+        if(city !=null){
+            editTextCity.setText(city);
+            submit(null);
+        }
     }
 
     public void submit(View view) {
@@ -83,14 +91,19 @@ public class MainActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
-    private void parseJson(String response) {
+    private void parseJson(String json) {
         textViewCity.setText(null);
         textViewTemperature.setText(null);
         imageViewIcon.setImageBitmap(null);
         //Gson
-        ApiWeather api = new Gson().fromJson(response,ApiWeather.class);
+        ApiWeather api = new Gson().fromJson(json,ApiWeather.class);
+
         if(api.getCod()==200){
+            // Enregistrement de la ville dans les préferences
+            Preference.setCity(MainActivity.this, api.getName());
+
             textViewCity.setText(api.getName());
+
             // deux méthodes pour afficher le même résultat -> %s °C
             // 1- textViewTemperature.setText(api.getMain().getTemp() + "°C");
             // 2-
@@ -99,6 +112,9 @@ public class MainActivity extends AppCompatActivity {
             String url = String.format(Constant.URL_IMAGE,api.getWeather().get(0).getIcon());
             Picasso.get().load(url).into(imageViewIcon);
         } else {
+            // Enregistrement de la ville dans les préferences
+            Preference.setCity(MainActivity.this, null);
+
             FastDialog.showDialog(MainActivity.this,
                     FastDialog.SIMPLE_DIALOG,
                     api.getMessage());
